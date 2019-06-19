@@ -38,15 +38,3 @@ Features
 1. The module identifies all text fields of included bundles and add them to
    the filter query via hook_views_query_alter().  
 2. The custom views bulk action updates identified matches via Entity API. 
-3. The module does not include items of custom blocks or menu links. 
-
-
-Future Development
-------------------
-
-1. Include paragraphs and Link field beyond node text fields.
-2. Include media entity for caption, alt text.
-3. Implement process management: define access (permission and user role)
-   and failure recovery process.
-4. Provide the option of making the update per field, in addition to per node.
-5. Provide a config step for selecting individual text fields to include.  
