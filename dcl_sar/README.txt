@@ -1,40 +1,40 @@
 Introduction
 ------------
 
-The SAR, search and replace, custom module allows searching and replaceing a
-string against all text fields of node bundles via Drupal's content views 
-interface. 
+SAR, search and replace, allows searching and replaceing a
+string against all text fields of node bundles via views. 
 
 
-Requirements
+Dependencies
 ------------
 
-SAR requires Views Bulk operations module to be installed.
+SAR requires Views Bulk Operations module
 https://www.drupal.org/project/views_bulk_operations
 
 
 Installation
 ------------
 
-Install as any other Drupal 8 module.
+Download the code and extract the "dcl_sar" folder into your modules/custom/.  
+
+Enable the module and download its dependency module VBO via Drush: 
+drush en dcl_sar -y 
 
 
 Configuration
 -------------
 
-1. Create a new content view 'content bulk edit'. 
-2. Add a "Views bulk operations" field (global), available on
-   all entity types, if not already added.
-3. Check the "Search and replace text" action.
-4. Add an exposed filter 'Combine fields filter' (global),
-   enter 'sar_search' as the filter identifier; select 'title' and 'body' from
-   the 'Choose fields to combine for filtering' dropdown menu, and apply
-   the filter. 
+1. Go to 'content bulk edit' view. 
+2. Add additional content types in the filter as needed. 
+3. Save your changes. 
 
+Usage 
+------
+Go to /content-bulk-edit/vbo-sar to use the feature. 
 
 Features
 -------- 
 
 1. The module identifies all text fields of included bundles and add them to
    the filter query via hook_views_query_alter().  
-2. The custom views bulk action updates identified matches via Entity API. 
+2. The custom views bulk action updates identified matching node fields via Entity API. 
