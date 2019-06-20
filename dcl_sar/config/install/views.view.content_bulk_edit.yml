@@ -1107,7 +1107,7 @@ display:
       pager:
         type: full
         options:
-          items_per_page: 20
+          items_per_page: 25
           offset: 0
           id: 0
           total_pages: null
@@ -1124,7 +1124,7 @@ display:
             items_per_page_options_all_label: '- All -'
             offset: false
             offset_label: Offset
-          quantity: null
+          quantity: 5
     cache_metadata:
       max-age: 0
       contexts:

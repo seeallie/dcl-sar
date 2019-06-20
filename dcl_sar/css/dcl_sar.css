@@ -1,4 +1,5 @@
-.vbo-multipage-selector {
+.vbo-multipage-selector,
+div.form-item-select-all {
   display: none;
 }
 
