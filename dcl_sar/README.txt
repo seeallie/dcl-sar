@@ -8,8 +8,9 @@ string against all text fields of node bundles via views.
 Dependencies
 ------------
 
-SAR requires Views Bulk Operations module
-https://www.drupal.org/project/views_bulk_operations
+1. SAR requires Views Bulk Operations module
+https://www.drupal.org/project/views_bulk_operations.
+2. The installed view requires "Page" as a content type. 
 
 
 Installation
