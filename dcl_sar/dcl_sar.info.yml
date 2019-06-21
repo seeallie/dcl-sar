@@ -1,7 +1,0 @@
-name: DCL search and replace
-type: module
-description: Search and replace string in all content
-core: 8.x
-package: Custom
-dependencies:
-  - views_bulk_operations
