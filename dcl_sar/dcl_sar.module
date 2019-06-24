@@ -1,0 +1,121 @@
+<?php
+
+/**
+ * @file
+ * Implement search and replacement of a string for node text fields.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\views\ViewExecutable;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+
+
+/**
+ * Implements hook_views_data_alter().
+ *
+ * Map computed field to views.
+ */
+function dcl_sar_views_data_alter(&$data) {
+  // Exposes a "matched text" computed field in views result table
+  // Using views.inc didn't work, so put the code in views_data_alter()
+  $data['node']['matched_text'] = [
+    'title' => t('Matched text'),
+    'help' => t('Matched occurrences of a search string in all text fields of a node.'),
+    'field' => [
+  // Indicate the custom field handler as specified in @ViewsField
+      'id' => 'dcl_sar_view_matched_text',
+    ],
+  ];
+
+  $data['views']['dcl_sar_search_string'] = [
+   'title' => t('String filter searching on all text fields.'),
+    'help' => t('Search all text fields of bundles.'),
+    'filter' => [
+      'id' => 'dcl_sar_combine_all_text',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_entity_base_field_info().
+ *
+ * Create a computed field to display mathched text of a search string .
+ * Its value is dynamically calculated based on the search string and
+ * its occurences in all text fields of a give node.
+ * The field is not stored in the database.
+ *
+ * @see https://www.drupal.org/docs/8/api/entity-api/dynamicvirtual-field-values-using-computed-field-property-classes
+ */
+function dcl_sar_entity_base_field_info(EntityTypeInterface $entity_type) {
+  if ($entity_type
+    ->id() == 'node') {
+    $fields['matched_text'] = BaseFieldDefinition::create('text')
+      ->setName('matched_text')
+      ->setLabel(t('Matched text'))
+    // Tells the Field API the field is computed so that
+    // it doesn't look for it in the database.
+      ->setComputed(TRUE);
+
+    return $fields;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * @todo Perhaps a views/field/xxxForm.php would be more elegant
+ */
+function dcl_sar_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Require view with wiew_id: content_bulk_edit; display_id: vbo_sar.
+  // @todo use config schema to make the above requirement part of the module installation
+  if ($form_id === 'views_form_content_bulk_edit_vbo_sar') {
+    // Add custom styles.
+    $form['#attached']['library'][] = 'dcl_sar/custom-vbo-form';
+
+    // Read the filtered results stored using the key
+    // "views_bulk_operations_bulk_form".
+    if ($form['views_bulk_operations_bulk_form']) {
+      // Set the dcl sar action as the selected value to submit.
+      $form['header']['views_bulk_operations_bulk_form']['action']['#default_value'] = 'views_bulk_sar';
+
+      // // Add search_string field
+      // $form['search_string'] = [
+      //   '#type' => 'textfield',
+      //   '#title' => t('Search string'),
+      //   '#description' => t('Enter what you are looking for'),
+      //   '#size' => 50,
+      //   '#maxlength' => 128,
+      //   '#weight' => -210,
+      // ];.
+      // Add replacement_string field.
+      // Through view's configuration, the field is only visible
+      // when there are applicable items in the view result table.
+      $form['replacement_string'] = [
+        '#type' => 'textfield',
+        '#title' => t('Replacement string'),
+        '#description' => t('Enter what you want to replace with'),
+        '#size' => 50,
+        '#maxlength' => 128,
+        '#weight' => -200,
+      ];
+
+      $form['#validate'][] = '_validate_replacement';
+    }
+  }
+}
+
+/**
+ * Validate the replacement string field.
+ */
+function _validate_replacement(&$form, FormStateInterface $form_state) {
+  $field_name = 'replacement_string';
+  $replacement = $form_state->getValue($field_name);
+  if (empty($replacement)) {
+    $form_state->setErrorByName($field_name, t('The replacement string is empty'));
+  }
+  elseif ($replacement != strip_tags($replacement)) {
+    $form_state->setErrorByName($field_name, t('The replacement string must not contain any html tags'));
+  } 
+}
