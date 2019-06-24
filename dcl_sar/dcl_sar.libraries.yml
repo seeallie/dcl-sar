@@ -1,7 +1,0 @@
-custom-vbo-form:
-  version: 1.x
-  css:
-    theme:
-      css/dcl_sar.css: {}
-  js:
-    js/dcl_sar.js: {}
