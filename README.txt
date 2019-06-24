@@ -30,6 +30,7 @@ Configuration
 3. Save your changes. 
 4. Go to /content-bulk-edit/vbo-sar to use the functionality of the module. 
 
+
 Design requirements 
 -------------------
 
